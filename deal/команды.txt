@@ -1,0 +1,132 @@
+# Создание пользователя
+
+
+from django.contrib.auth.models import User
+
+user1 = User.objects.create_user('Имя1')
+user2 = User.objects.create_user('Имя2')
+
+
+# Создание автора
+
+
+from news.models import Author
+
+author1 = Author.objects.create(user=user1, rating=0)
+author2 = Author.objects.create(user=user2, rating=0)
+
+
+# Создание категорий
+
+
+from news.models import Category
+
+category1 = Category.objects.create(name='Категория 1')
+category2 = Category.objects.create(name='Категория 2')
+category3 = Category.objects.create(name='Категория 3')
+category4 = Category.objects.create(name='Категория 4')
+
+
+# Создание статей и новостей
+
+
+from news.models import Post
+
+post1 = Post.objects.create(author=author1, post_type='Пост', title='Название 1', content='Контент 1', rating=0)
+post1.categories.set([category1, category2, category3])
+
+post2 = Post.objects.create(author=author1, post_type='Пост', title='Название 2', content='Контент 2', rating=0)
+post2.categories.set([category2, category3])
+
+news1 = Post.objects.create(author=author2, post_type='Новости', title='Новости 1', content='Контент 3', rating=0)
+news1.categories.set([category4])
+
+
+# Создание комментариев
+
+
+from news.models import Comment
+
+comment1 = Comment.objects.create(post=post1, user=user1, text='Комментарий 1', rating=0)
+comment2 = Comment.objects.create(post=post1, user=user2, text='Комментарий 2', rating=0)
+comment3 = Comment.objects.create(post=post2, user=user1, text='Комментарий 3', rating=0)
+comment4 = Comment.objects.create(post=news1, user=user2, text='Комментарий 4', rating=0)
+
+
+# Функции dislike() и like(). Пример:
+
+
+post1.like()
+post2.dislike()
+news1.like()
+comment1.like()
+comment2.like()
+comment3.dislike()
+comment4.like()
+
+
+# Обновление рейтингов пользователей
+
+
+author1.update_rating()
+author2.update_rating()
+
+
+# Вывод ника и рейтинга лучшего пользователя
+
+
+best_author = Author.objects.order_by('-rating').first()
+print(f"Лучший пользователь: {best_author.user.username}, рейтинг: {best_author.rating}")
+
+
+# Вывод информации о лучшей статье
+
+
+best_post = Post.objects.filter(post_type='article').order_by('-rating').first()
+print(f"Дата добавления: {best_post.created_at}")
+print(f"Username автора: {best_post.author.user.username}")
+print(f"Рейтинг: {best_post.rating}")
+print(f"Заголовок: {best_post.title}")
+print(f"Превью: {best_post.content[:50]}...")
+
+
+# Вывод всех комментариев к этой статье
+
+
+comments = Comment.objects.filter(post=best_post)
+for comment in comments:
+
+
+#Для работы нужно добать отступ(пробел), после завершения еще один пробел
+
+
+    print(f"Дата: {comment.created_at}")
+    print(f"Пользователь: {comment.user.username}")
+    print(f"Рейтинг: {comment.rating}")
+    print(f"Текст: {comment.text}")
+    print("")
+
+
+#Здесь будет итог
+
+
+#Метод preview()
+
+
+from news.models import Post
+
+preview_text = post.preview()
+print(preview_text)
+
+
+#Для удаления выбранной модели из базы данных:
+
+
+from news.models import #Выбранная модель: Post, Category, Author, Comment
+
+post = Post.objects.get(id=1) #Замените Post на нужное. А также замените 1 на ID выбранного поста, который необходимо удалить
+
+post.delete() 
+
+
+
